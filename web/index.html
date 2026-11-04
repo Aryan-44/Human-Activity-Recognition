@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Human Activity Recognition</title>
+  <meta name="description" content="Live human activity recognition in your browser: wave to say hi, clap, sit, stand, squat, walk. Powered by MediaPipe Pose; your video never leaves your device.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👋</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">👋</span>
+      <div>
+        <h1>Human Activity Recognition</h1>
+        <p>Live, pose-based activity recognition in your browser</p>
+      </div>
+    </div>
+    <span class="privacy">🔒 Runs on your device. Video is never uploaded.</span>
+  </header>
+
+  <main class="layout">
+    <section class="stage" id="stage" aria-label="Camera view">
+      <video id="video" playsinline muted></video>
+      <canvas id="canvas"></canvas>
+
+      <div class="chip" id="chip" hidden></div>
+      <div class="fall-banner" id="fallBanner" role="alert" hidden>⚠ FALL DETECTED!</div>
+
+      <div class="start" id="startScreen">
+        <h2>See what you're doing, live</h2>
+        <p>Wave to say hi, clap, raise your hands, sit, stand, squat or walk.
+          It works at your desk too: only your upper body needs to be in view.</p>
+        <button id="startCamera" class="button primary" disabled>Loading pose model…</button>
+        <label class="button secondary" id="fileButton" aria-disabled="true">
+          Analyze a video file instead
+          <input type="file" id="fileInput" accept="video/*" hidden disabled>
+        </label>
+        <p class="status" id="status" role="status"></p>
+      </div>
+
+      <div class="stage-controls" id="stageControls" hidden>
+        <button class="button ghost" id="resetButton" title="Reset counters (R)">Reset</button>
+        <button class="button ghost" id="shotButton" title="Save a screenshot (S)">Screenshot</button>
+        <button class="button ghost" id="fullButton" title="Fullscreen (F)">Fullscreen</button>
+        <button class="button ghost danger" id="stopButton" title="Stop (Esc)">Stop</button>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="card current">
+        <div class="eyebrow">Current activity</div>
+        <div class="activity" id="activity">—</div>
+        <div class="meter" aria-hidden="true"><div id="confidenceBar"></div></div>
+        <div class="muted" id="confidenceText">Confidence —</div>
+      </div>
+
+      <div class="card">
+        <dl class="stats">
+          <div><dt>Time in activity</dt><dd id="statTime">—</dd></div>
+          <div><dt>View</dt><dd id="statView">—</dd></div>
+          <div><dt>Squats</dt><dd id="statSquats">0</dd></div>
+          <div><dt>Jumping jacks</dt><dd id="statJacks">0</dd></div>
+          <div><dt>Falls</dt><dd id="statFalls">0</dd></div>
+          <div><dt>Knee angle</dt><dd id="statKnee">—</dd></div>
+          <div><dt>Session</dt><dd id="statSession">0:00</dd></div>
+          <div><dt>FPS</dt><dd id="statFps">—</dd></div>
+        </dl>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h3>Time per activity</h3>
+          <button class="link" id="downloadCsv" disabled>Download CSV</button>
+        </div>
+        <ul class="bars" id="sessionBars">
+          <li class="empty">Start the camera to begin a session.</li>
+        </ul>
+      </div>
+
+      <details class="card help">
+        <summary>What it recognizes</summary>
+        <h4>At your desk (head and shoulders)</h4>
+        <p>Waving (says <strong>Hi!</strong>), Clapping, Touching face, One or both hands raised, Sitting</p>
+        <h4>Down to the knees</h4>
+        <p>Standing or Sitting (from the thigh angle), Lying down</p>
+        <h4>Full body</h4>
+        <p>Walking, Squatting (counted), Bending, Jumping jacks (counted), fall alert</p>
+        <h4>Keys</h4>
+        <p><kbd>F</kbd> fullscreen · <kbd>R</kbd> reset · <kbd>S</kbd> screenshot · <kbd>Esc</kbd> stop</p>
+      </details>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    Pose estimation by MediaPipe. The Python desktop app and model training live in the same
+    <a href="https://github.com/Aryan-44/Human-Activity-Recognition">GitHub repository</a>.
+  </footer>
+</body>
+</html>

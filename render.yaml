@@ -1,0 +1,9 @@
+# Render Blueprint: hosts the browser version (web/) as a free static site.
+# The live webcam, pose model and recognition all run in the visitor's
+# browser, so no Python server is needed.
+services:
+  - type: web
+    runtime: static
+    name: human-activity-recognition-live
+    buildCommand: echo "No build step needed"
+    staticPublishPath: ./web

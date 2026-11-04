@@ -16,6 +16,14 @@ It combines two approaches:
 On top of that it recognizes gestures (waving says **"Hi!"**), counts exercise
 reps, detects falls and writes a report for every session.
 
+There are two versions:
+
+- **Desktop app (Python)**: `main.py`, with the full feature set including
+  ML training.
+- **Web app (browser)**: the `web/` folder. The same recognition rules run
+  live in any browser with your webcam and nothing is uploaded. It can be
+  hosted for free as a static site. See [Web version](#web-version-live-in-the-browser).
+
 ## What it recognizes
 
 | Camera sees | Activities |
@@ -54,6 +62,8 @@ reps, detects falls and writes a report for every session.
 | `train.py` | Trains and compares 3 models, saves the best, writes a report and confusion matrix |
 | `model.py` | Loads the trained model and makes predictions |
 | `tests/` | Unit tests |
+| `web/` | Browser version: `index.html`, `app.js` (camera, drawing, panel), `recognizer.js` (the rules, ported from Python), tests |
+| `render.yaml` | Render configuration that hosts `web/` as a free static site |
 
 Folders created while running: `data/` (training samples), `models/` (trained
 model and report), `output/` (session reports, screenshots, videos).
@@ -93,6 +103,38 @@ Otherwise the rules are used.
 **Try it at your desk:** wave at the camera (hand at shoulder height or
 higher, moving side to side) and a "Hi!" bubble appears next to your hand.
 Clap twice, or rest your chin on your hand.
+
+## Web version (live in the browser)
+
+The `web/` folder is a browser version of the app. MediaPipe Pose and the
+recognition rules run **on the visitor's own device** in JavaScript. The
+webcam video is never sent to a server, so the site needs no backend and can
+be hosted for free as a static site.
+
+It recognizes the same activities and gestures as the desktop app ("Hi!"
+bubble, clapping, sitting/standing from any view, squats, jumping jacks, fall
+alert). It also shows a live time-per-activity summary, offers a CSV download
+and works with a video file as well as the webcam. It uses the hand-written
+rules only; trained ML models are a desktop feature.
+
+**Run it locally** (the camera works on `localhost`):
+
+```powershell
+python -m http.server 8000 --directory web
+```
+
+Then open <http://localhost:8000>.
+
+**Deploy on Render as a Static Site.** A Web Service runs Python on a server,
+which has no camera, so it can't show your live webcam.
+
+- *Easiest:* in Render choose **New → Blueprint** and pick this repository.
+  `render.yaml` sets everything up.
+- *Or by hand:* **New → Static Site**, connect this repository, leave
+  **Build Command** empty and set **Publish Directory** to `web`.
+
+Render serves it over HTTPS, which browsers require for camera access. The same
+`web/` folder also works on GitHub Pages or Netlify.
 
 ## 2. Train your own model (optional)
 
@@ -183,8 +225,12 @@ trigger the alert.
 ## Run the tests
 
 ```powershell
-python -m unittest discover tests
+python -m unittest discover tests     # Python version
+cd web; npm test                       # browser version (needs Node.js 18+)
 ```
+
+Both test suites use the same hand-made poses, so they also check that the
+two versions give the same answers.
 
 ## Tips and limitations
 
