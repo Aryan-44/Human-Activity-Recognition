@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Human Activity Recognition</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #172033; background: #f3f6fb; }
+    body { margin: 0; min-height: 100vh; display: grid; place-items: center; padding: 24px; box-sizing: border-box; }
+    main { width: min(100%, 680px); background: white; padding: clamp(24px, 6vw, 48px); border-radius: 20px; box-shadow: 0 16px 48px #18345b16; }
+    h1 { margin: 0 0 12px; font-size: clamp(1.8rem, 5vw, 2.5rem); }
+    p { line-height: 1.6; color: #526079; }
+    .drop { display: grid; gap: 16px; border: 2px dashed #b6c4d9; border-radius: 14px; padding: 24px; margin: 24px 0; }
+    input[type=file] { width: 100%; }
+    button { border: 0; border-radius: 10px; padding: 14px 20px; background: #2463eb; color: white; font: inherit; font-weight: 700; cursor: pointer; }
+    button:disabled { opacity: .65; cursor: wait; }
+    .notice { padding: 12px 16px; background: #fff1ed; border-radius: 10px; color: #9c341d; }
+    small { color: #68758a; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Human Activity Recognition</h1>
+    <p>Upload a short video to identify activities using pose estimation. The results include an activity summary and a downloadable timeline.</p>
+    {% with messages = get_flashed_messages() %}
+      {% for message in messages %}<p class="notice" role="alert">{{ message }}</p>{% endfor %}
+    {% endwith %}
+    <form method="post" enctype="multipart/form-data" onsubmit="this.querySelector('button').disabled = true; this.querySelector('button').textContent = 'Analyzing video…';">
+      <label class="drop">
+        <strong>Select a video</strong>
+        <input type="file" name="video" accept=".mp4,.mov,.avi,.mkv,.webm,video/*" required>
+        <small>MP4, MOV, AVI, MKV, or WebM · Up to 100 MB and 2 minutes</small>
+      </label>
+      <button type="submit">Analyze video</button>
+    </form>
+    <p><small>Videos are processed temporarily and deleted after analysis. Result files are automatically removed after six hours.</small></p>
+  </main>
+</body>
+</html>

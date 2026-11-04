@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Analysis results · Human Activity Recognition</title>
+  <style>
+    :root { color-scheme: light; font-family: system-ui, sans-serif; color: #172033; background: #f3f6fb; }
+    body { margin: 0; padding: 32px 20px; }
+    main { width: min(100%, 880px); margin: auto; background: white; padding: clamp(24px, 5vw, 44px); border-radius: 20px; box-shadow: 0 16px 48px #18345b16; box-sizing: border-box; }
+    h1 { margin-top: 0; }
+    p, .muted { color: #526079; }
+    .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(125px, 1fr)); gap: 12px; margin: 24px 0; }
+    .stat { padding: 16px; background: #f3f6fb; border-radius: 12px; }
+    .stat strong { display: block; font-size: 1.6rem; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; }
+    th, td { padding: 12px 8px; border-bottom: 1px solid #e6ebf2; text-align: left; }
+    th:last-child, td:last-child { text-align: right; }
+    img { display: block; max-width: 100%; height: auto; margin: 20px 0; }
+    a.button { display: inline-block; margin: 4px 8px 4px 0; padding: 11px 16px; border-radius: 9px; color: white; background: #2463eb; text-decoration: none; font-weight: 650; }
+    a.secondary { color: #2463eb; background: #eaf0ff; }
+    @media (max-width: 480px) { th, td { padding: 10px 4px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Analysis results</h1>
+    <p class="muted">{{ filename }} · {{ analyzed_at }} · {{ "%.1f"|format(result.duration) }} seconds analyzed</p>
+    <div class="stats">
+      <div class="stat"><strong>{{ result.squats }}</strong>Squats</div>
+      <div class="stat"><strong>{{ result.jumping_jacks }}</strong>Jumping jacks</div>
+      <div class="stat"><strong>{{ result.falls }}</strong>Falls detected</div>
+    </div>
+    <h2>Activities</h2>
+    {% if result.activities %}
+      <table>
+        <thead><tr><th>Activity</th><th>Time</th></tr></thead>
+        <tbody>
+          {% for activity in result.activities %}
+            <tr><td>{{ activity.name }}</td><td>{{ "%.1f"|format(activity.seconds) }} s</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% if result.chart %}
+        <img src="{{ url_for('download_result', job_id=job_id, artifact=result.chart) }}" alt="Chart showing time spent in each activity">
+      {% endif %}
+    {% else %}
+      <p>No activities were recognized in this clip.</p>
+    {% endif %}
+    <a class="button" href="{{ url_for('download_result', job_id=job_id, artifact='timeline.csv') }}">Download activity timeline (CSV)</a>
+    <a class="button secondary" href="{{ url_for('index') }}">Analyze another video</a>
+  </main>
+</body>
+</html>

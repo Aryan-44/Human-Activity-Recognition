@@ -83,6 +83,26 @@ python main.py --rules-only               # ignore the trained model
 If `models/activity_model.joblib` exists it is loaded automatically.
 Otherwise the rules are used.
 
+## Deploy as a web app on Render
+
+The desktop app above uses a local camera and display. For browser-based use,
+the included web app accepts a video upload and returns an activity summary,
+chart, and downloadable CSV timeline. Uploaded videos must be at most 100 MB
+and 2 minutes long. Uploaded videos are deleted after analysis; result files
+are removed after six hours.
+
+Create a **Web Service** on Render connected to this repository and set:
+
+| Setting | Value |
+|---------|-------|
+| Root Directory | Leave blank |
+| Build Command | `pip install -r requirements.txt` |
+| Start Command | `gunicorn --timeout 300 webapp:app` |
+
+Render uses the Python version in `.python-version`. The `apt.txt` file lists
+the system libraries required by OpenCV. The service uses the hand-written
+rules unless a trained model is available at `models/activity_model.joblib`.
+
 | Key | Action |
 |-----|--------|
 | Q | Quit and save the session report |
