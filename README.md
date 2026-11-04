@@ -130,8 +130,11 @@ which has no camera, so it can't show your live webcam.
 
 - *Easiest:* in Render choose **New → Blueprint** and pick this repository.
   `render.yaml` sets everything up.
-- *Or by hand:* **New → Static Site**, connect this repository, leave
-  **Build Command** empty and set **Publish Directory** to `web`.
+- *Or by hand:* **New → Static Site**, connect this repository, set
+  **Root Directory** to `web`, **Build Command** to `echo done` and
+  **Publish Directory** to `.`. The root directory matters: without it, Render
+  finds `requirements.txt` and tries to install the desktop app's Python
+  packages, which fails.
 
 Render serves it over HTTPS, which browsers require for camera access. The same
 `web/` folder also works on GitHub Pages or Netlify.
